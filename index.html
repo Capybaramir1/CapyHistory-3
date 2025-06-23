@@ -5,53 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Capy Game Play</title>
     <style>
-        body {
+        /* Общие стили */
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
             font-family: 'Arial', sans-serif;
             overflow: hidden;
             background-color: #000;
+            color: white;
+            height: 100vh;
         }
         
         /* Предупреждения */
         .warning-page {
-            display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            padding: 20px;
-            box-sizing: border-box;
-            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             z-index: 2000;
-            overflow-y: auto;
-            color: #ffffff
-            
+            padding: 20px;
         }
         
         .warning-content {
             max-width: 800px;
-            margin: 50px auto;
-            padding: 30px;
             background-color: rgba(0, 0, 0, 0.7);
             border-radius: 15px;
+            padding: 30px;
+            text-align: center;
             border: 1px solid #444;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            
+            box-shadow: 0 0 30px rgba(0, 100, 255, 0.3);
         }
         
         .warning-title {
             color: #ba0707;
             font-size: 28px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
         
         .warning-text {
             font-size: 18px;
             line-height: 1.6;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             text-align: left;
         }
         
@@ -59,12 +62,17 @@
             background: linear-gradient(135deg, #4fc3f7 0%, #2196f3 100%);
             color: white;
             border: none;
-            padding: 12px 25px;
+            padding: 12px 30px;
             font-size: 18px;
             border-radius: 25px;
             cursor: pointer;
             transition: all 0.3s;
-            margin-top: 20px;
+            margin-top: 15px;
+        }
+        
+        .next-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
         }
         
         /* Экран загрузки */
@@ -74,8 +82,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('images/loading_bg.jpg') no-repeat center center;
-            background-size: cover;
+            background-color: #000;
             display: none;
             flex-direction: column;
             justify-content: center;
@@ -88,30 +95,30 @@
             height: 200px;
             border-radius: 25px;
             object-fit: cover;
-            margin-bottom: 50px;
+            margin-bottom: 40px;
+            box-shadow: 0 0 20px rgba(0, 150, 255, 0.5);
         }
         
         .loading-bar-container {
             width: 300px;
-            height: 20px;
-            background-color: rgba(50, 50, 50, 0.7);
-            border-radius: 10px;
+            height: 10px;
+            background-color: rgba(100, 100, 100, 0.5);
+            border-radius: 5px;
             overflow: hidden;
-            margin-top: 20px;
+            margin-bottom: 15px;
         }
         
         .loading-bar {
             height: 100%;
             width: 0%;
             background: linear-gradient(90deg, #00ffff, #0088ff);
-            border-radius: 10px;
+            border-radius: 5px;
             transition: width 0.3s;
         }
         
         .loading-text {
             color: #00ffff;
-            font-size: 18px;
-            margin-top: 15px;
+            font-size: 16px;
         }
         
         /* Главное меню */
@@ -121,93 +128,153 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('images/menu_bg.jpg') no-repeat center center;
-            background-size: cover;
             display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
             z-index: 900;
         }
         
+        .menu-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+        
+        .menu-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(3px);
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+        
         .menu-logo {
-            width: 250px;
-            height: 250px;
+            width: 220px;
+            height: 220px;
             border-radius: 30px;
             object-fit: cover;
             margin-bottom: 40px;
+            box-shadow: 0 0 30px rgba(0, 100, 255, 0.5);
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .menu-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 600px;
+            margin: 0 auto;
         }
         
         .menu-button {
-            background: rgba(0, 168, 255, 0.7);
+            background: rgba(0, 100, 255, 0.7);
             color: white;
             border: none;
-            padding: 15px 40px;
-            font-size: 20px;
-            border-radius: 30px;
-            margin: 10px;
+            padding: 15px 25px;
+            font-size: 18px;
+            border-radius: 15px;
             cursor: pointer;
             transition: all 0.3s;
-            min-width: 250px;
+            min-width: 200px;
             text-align: center;
             backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .menu-button:hover {
-            background: rgba(0, 168, 255, 0.9);
-            transform: translateY(-3px);
+            background: rgba(0, 120, 255, 0.9);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 100, 255, 0.3);
         }
         
-        /* Модальные окна */
-        .modal {
-            display: none;
+        /* Игровой экран */
+        #game-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            z-index: 1900;
-            justify-content: center;
-            align-items: center;
+            display: none;
+            z-index: 800;
         }
         
-        .modal-content {
-            background-color: #222;
-            padding: 30px;
-            border-radius: 15px;
-            max-width: 600px;
-            max-height: 80vh;
-            overflow-y: auto;
-            color: white;
-        }
-        
-        .close-modal {
-            float: right;
-            cursor: pointer;
-            font-size: 24px;
-        }
-        
-        /* Админ панель */
-        .admin-panel {
-            background-color: #333;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-        }
-        
-        .admin-input {
+        .game-bg {
+            position: absolute;
             width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            border: none;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+        
+        .game-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+        
+        .game-top-panel {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .game-button {
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+        }
+        
+        .game-button:hover {
+            background: rgba(0, 100, 255, 0.7);
+        }
+        
+        .game-dialogue {
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: auto;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Анимации */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+        
+        /* Видео предистории */
+        #intro-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            z-index: 1500;
+            background-color: #000;
         }
     </style>
 </head>
 <body>
     <!-- Первое предупреждение -->
-    <div id="warning1" class="warning-page" style="display: block;">
+    <div id="warning1" class="warning-page">
         <div class="warning-content">
             <h1 class="warning-title">ВАЖНОЕ ПРЕДУПРЕЖДЕНИЕ</h1>
             <div class="warning-text">
@@ -222,15 +289,15 @@
                 <p>При создании проекта использовались нейросети.</p>
                 <p>Игра не подлежит распространению.</p>
             </div>
-            <p style="color: #888; font-size: 14px; margin-top: 30px;">
-                "Capy Game Play" не является официальным зарегистрированным лицом в Российской Федерации.Компания не официальна!
+            <p style="color: #888; font-size: 14px; margin-top: 20px;">
+                "Capy Game Play" не является официальным зарегистрированным лицом в Российской Федерации.
             </p>
             <button class="next-btn" onclick="showNextWarning()">ПОНЯТНО</button>
         </div>
     </div>
     
     <!-- Второе предупреждение -->
-    <div id="warning2" class="warning-page">
+    <div id="warning2" class="warning-page" style="display: none;">
         <div class="warning-content">
             <h1 class="warning-title">ПРЕДУПРЕЖДЕНИЕ О СОДЕРЖАНИИ</h1>
             <div class="warning-text">
@@ -244,13 +311,13 @@
                 <p>В игре отсутствуют нецензурная лексика и жестокие действия.</p>
                 <p>Рекомендуется увеличить громкость звука.</p>
             </div>
-            <button id="start-loading-btn" class="next-btn" onclick="startLoading()">ПРИНЯТЬ</button>
+            <button class="next-btn" onclick="startLoading()">ПРИНЯТЬ</button>
         </div>
     </div>
     
     <!-- Экран загрузки -->
     <div id="loading-screen">
-        <img src="images/game_logo.png" alt="Логотип игры" class="loading-logo">
+        <img src="images/loading_logo.png" alt="Логотип" class="loading-logo">
         <div class="loading-bar-container">
             <div class="loading-bar" id="loading-bar"></div>
         </div>
@@ -262,99 +329,49 @@
     
     <!-- Главное меню -->
     <div id="main-menu">
-        <img src="images/game_logo.png" alt="Логотип игры" class="menu-logo">
-        <button class="menu-button" onclick="startGame()">Играть</button>
-        <button class="menu-button" onclick="showModal('how-to-play-modal')">Как играть</button>
-        <button class="menu-button" onclick="showModal('cards-modal')">Открытые карточки</button>
-        <button class="menu-button" onclick="showModal('quests-modal')">Задания</button>
-        <button class="menu-button" onclick="showModal('authors-modal')">Авторы</button>
-        <button class="menu-button" onclick="showAdminPanel()">Панель админа</button>
+        <img src="images/menu_bg.jpg" alt="Фон меню" class="menu-bg">
+        <div class="menu-content">
+            <img src="images/game_logo.png" alt="Логотип игры" class="menu-logo">
+            <div class="menu-buttons">
+                <button class="menu-button" onclick="startGame()">Играть</button>
+                <button class="menu-button" onclick="showHowToPlay()">Как играть</button>
+                <button class="menu-button" onclick="showCards()">Открытые карточки</button>
+                <button class="menu-button" onclick="showQuests()">Задания</button>
+                <button class="menu-button" onclick="showAuthors()">Авторы</button>
+                <button class="menu-button" onclick="showAdminPanel()">Панель админа</button>
+            </div>
+        </div>
         <audio id="menu-music" loop>
             <source src="sounds/menu_music.mp3" type="audio/mpeg">
         </audio>
     </div>
     
-    <!-- Модальное окно "Как играть" -->
-    <div id="how-to-play-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="hideModal('how-to-play-modal')">&times;</span>
-            <h2>Как играть</h2>
-            <p>На протяжении игры у тебя всегда будет выбор. Все зависит от твоего выбора!</p>
-            <p>Используй карточки, которые ты получаешь, чтобы побеждать врагов.</p>
-            <p>Каждый твой выбор влияет на развитие сюжета.</p>
-        </div>
-    </div>
+    <!-- Видео предистории -->
+    <video id="intro-video" controls>
+        <source src="videos/intro.mp4" type="video/mp4">
+        Ваш браузер не поддерживает видео.
+    </video>
     
-    <!-- Модальное окно "Открытые карточки" -->
-    <div id="cards-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="hideModal('cards-modal')">&times;</span>
-            <h2>Открытые карточки</h2>
-            <div id="unlocked-cards-list">
-                <!-- Здесь будут отображаться открытые карточки -->
-                <p>Пока нет открытых карточек</p>
+    <!-- Игровой экран -->
+    <div id="game-screen">
+        <img src="images/office_bg.jpg" alt="Офис" class="game-bg">
+        <div class="game-content">
+            <div class="game-top-panel">
+                <button class="game-button" onclick="openPhone()">Телефон</button>
+                <button class="game-button" onclick="openCards()">Карточки</button>
             </div>
-        </div>
-    </div>
-    
-    <!-- Модальное окно "Задания" -->
-    <div id="quests-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="hideModal('quests-modal')">&times;</span>
-            <h2>Задания</h2>
-            <p>Выполните задания и введите код, чтобы получить карточки:</p>
-            <input type="text" id="quest-code-input" placeholder="Введите код">
-            <button onclick="checkQuestCode()">Проверить</button>
-            <div id="quests-list">
-                <p>1. Найти скрытый предмет - код: 8901</p>
-                <!-- Другие задания можно добавить здесь -->
-            </div>
-        </div>
-    </div>
-    
-    <!-- Модальное окно "Авторы" -->
-    <div id="authors-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="hideModal('authors-modal')">&times;</span>
-            <h2>Авторы</h2>
-            <ul>
-                <li>Алексей</li>
-                <li>Виктор</li>
-                <li>Артем</li>
-            </ul>
-        </div>
-    </div>
-    
-    <!-- Модальное окно "Админ панель" -->
-    <div id="admin-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="hideModal('admin-modal')">&times;</span>
-            <h2>Панель админа</h2>
-            <div class="admin-panel">
-                <input type="password" id="admin-password" class="admin-input" placeholder="Введите пароль">
-                <button onclick="checkAdminPassword()">Войти</button>
-                <div id="admin-controls" style="display: none; margin-top: 20px;">
-                    <h3>Управление игрой</h3>
-                    <button onclick="adminAction('reset')">Сбросить прогресс</button>
-                    <button onclick="adminAction('unlock_all')">Разблокировать все карточки</button>
-                    <input type="text" id="admin-scene" class="admin-input" placeholder="Номер сцены">
-                    <button onclick="adminAction('jump')">Перейти на сцену</button>
-                </div>
+            
+            <div class="game-dialogue">
+                <p>Вы находитесь в офисе. Что будете делать?</p>
             </div>
         </div>
     </div>
     
     <script>
-        // Сохранение данных в localStorage
-        const gameData = {
-            unlockedCards: JSON.parse(localStorage.getItem('unlockedCards')) || [],
-            completedQuests: JSON.parse(localStorage.getItem('completedQuests')) || []
-        };
-        
         // Показать следующее предупреждение
         function showNextWarning() {
             document.getElementById('warning1').style.display = 'none';
-            document.getElementById('warning2').style.display = 'block';
+            document.getElementById('warning2').style.display = 'flex';
         }
         
         // Начать загрузку
@@ -368,17 +385,14 @@
             loadingMusic.play();
             
             // Загрузка ровно 12 секунд
-            const loadingTime = 10000;
-            const startTime = Date.now();
+            let progress = 0;
             const loadingBar = document.getElementById('loading-bar');
             const loadingText = document.getElementById('loading-text');
             
             const loadingInterval = setInterval(() => {
-                const elapsed = Date.now() - startTime;
-                const progress = Math.min(elapsed / loadingTime * 100, 100);
-                
+                progress += 1;
                 loadingBar.style.width = progress + '%';
-                loadingText.textContent = 'Загрузка: ' + Math.floor(progress) + '%';
+                loadingText.textContent = 'Загрузка: ' + progress + '%';
                 
                 if (progress >= 100) {
                     clearInterval(loadingInterval);
@@ -387,110 +401,76 @@
                         showMainMenu();
                     }, 500);
                 }
-            }, 50);
+            }, 120); // 12 секунд / 100% = 120ms на 1%
         }
         
         // Показать главное меню
         function showMainMenu() {
             const mainMenu = document.getElementById('main-menu');
-            mainMenu.style.display = 'flex';
+            mainMenu.style.display = 'block';
             
             // Воспроизвести музыку меню
             const menuMusic = document.getElementById('menu-music');
             menuMusic.volume = 0.5;
             menuMusic.play();
-            
-            // Загрузить открытые карточки
-            updateUnlockedCardsList();
         }
         
         // Начать игру
         function startGame() {
-            alert('Игра начинается!');
-            // Здесь будет переход к первой сцене игры
-        }
-        
-        // Показать модальное окно
-        function showModal(modalId) {
-            document.getElementById(modalId).style.display = 'flex';
-        }
-        
-        // Скрыть модальное окно
-        function hideModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
-        
-        // Обновить список открытых карточек
-        function updateUnlockedCardsList() {
-            const cardsList = document.getElementById('unlocked-cards-list');
+            document.getElementById('main-menu').style.display = 'none';
+            const menuMusic = document.getElementById('menu-music');
+            menuMusic.pause();
             
-            if (gameData.unlockedCards.length === 0) {
-                cardsList.innerHTML = '<p>Пока нет открытых карточек</p>';
-            } else {
-                cardsList.innerHTML = '';
-                gameData.unlockedCards.forEach(card => {
-                    const cardElement = document.createElement('div');
-                    cardElement.textContent = card;
-                    cardElement.style.margin = '10px 0';
-                    cardsList.appendChild(cardElement);
-                });
-            }
+            // Показать видео предистории
+            const introVideo = document.getElementById('intro-video');
+            introVideo.style.display = 'block';
+            introVideo.play();
+            
+            // Когда видео закончится, начать игру
+            introVideo.onended = function() {
+                introVideo.style.display = 'none';
+                startOfficeScene();
+            };
         }
         
-        // Проверить код задания
-        function checkQuestCode() {
-            const codeInput = document.getElementById('quest-code-input');
-            if (codeInput.value === '8901') {
-                alert('Задание выполнено! Новая карточка добавлена.');
-                if (!gameData.unlockedCards.includes('КапиМега')) {
-                    gameData.unlockedCards.push('КапиМега');
-                    localStorage.setItem('unlockedCards', JSON.stringify(gameData.unlockedCards));
-                    updateUnlockedCardsList();
-                }
-                codeInput.value = '';
-            } else {
-                alert('Неверный код!');
-            }
+        // Начать сцену в офисе
+        function startOfficeScene() {
+            document.getElementById('game-screen').style.display = 'block';
+            // Здесь можно добавить начальный диалог или действия
         }
         
-        // Показать админ панель
+        // Функции кнопок
+        function openPhone() {
+            alert('Телефон открыт');
+        }
+        
+        function openCards() {
+            alert('Карточки открыты');
+        }
+        
+        function showHowToPlay() {
+            alert('На протяжении игры у тебя всегда будет выбор. Все зависит от твоего выбора!');
+        }
+        
+        function showCards() {
+            alert('Здесь будут отображаться открытые карточки');
+        }
+        
+        function showQuests() {
+            alert('Здесь будут задания');
+        }
+        
+        function showAuthors() {
+            alert('Авторы:\n- Алексей\n- Виктор\n- Артем');
+        }
+        
         function showAdminPanel() {
-            showModal('admin-modal');
-        }
-        
-        // Проверить пароль админа
-        function checkAdminPassword() {
-            const passwordInput = document.getElementById('admin-password');
-            if (passwordInput.value === '8901') {
-                document.getElementById('admin-controls').style.display = 'block';
-                passwordInput.value = '';
+            const password = prompt('Введите пароль:');
+            if (password === '8901') {
+                alert('Панель админа открыта');
             } else {
                 alert('Неверный пароль!');
             }
-        }
-        
-        // Действия админа
-        function adminAction(action) {
-            switch (action) {
-                case 'reset':
-                    if (confirm('Вы уверены, что хотите сбросить весь прогресс?')) {
-                        localStorage.clear();
-                        location.reload();
-                    }
-                    break;
-                case 'unlock_all':
-                    gameData.unlockedCards = ['КапиМега', 'Шлёпа', 'ХренобусБот'];
-                    localStorage.setItem('unlockedCards', JSON.stringify(gameData.unlockedCards));
-                    updateUnlockedCardsList();
-                    alert('Все карточки разблокированы!');
-                    break;
-                case 'jump':
-                    const scene = document.getElementById('admin-scene').value;
-                    alert('Переход на сцену ' + scene);
-                    // Здесь будет логика перехода на конкретную сцену
-                    break;
-            }
-            hideModal('admin-modal');
         }
     </script>
 </body>
